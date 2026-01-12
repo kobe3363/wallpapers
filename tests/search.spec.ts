@@ -21,7 +21,6 @@ test('test', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
     await page.getByText('14').click();
     // We should verify that the wallpaper item was successfully downloaded as a final step.
-    // Create test suit for automated tests
     const downloadPromise = page.waitForEvent('download');
     await page.goto(process.env.BASE_URL + '/wallpapers/0f377020-bbc0-47fb-ac5a-ade2429217ac');
     const download = await downloadPromise;
