@@ -10,7 +10,7 @@
   "devDependencies": {
     "@playwright/test": "1.57.0",
     "@types/node": "25.0.6",
-    "dotenv": "^17.2.3"
+    "dotenv": "17.2.3"
   },
   "engines": {
     "node": ">=22.9.0 <24.12.0"

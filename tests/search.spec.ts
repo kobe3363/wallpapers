@@ -1,6 +1,5 @@
 import { test, expect } from '../fixtures/test-setup';
-import { RingtonesAndWallpapersPage } from '../pages/ringtones-and-wallpapers.page';
-import { WallpapersPage } from '../pages/wallpapers.page';
+import { RingtonesAndWallpapersPage, WallpapersPage} from '../pages';
 
 test('User can search and download free wallpaper', async ({ page }) => {
     const ringtonesAndWallpapersPage = new RingtonesAndWallpapersPage(page);
@@ -11,7 +10,7 @@ test('User can search and download free wallpaper', async ({ page }) => {
     await ringtonesAndWallpapersPage.selectCategory('Wallpapers');
     await ringtonesAndWallpapersPage.searchFor(searchTerm);
     await wallpapersPage.filterByPrice('Free');
-    
+
     const downloadedFilePath = await wallpapersPage.downloadFirstWallpaper(searchTerm);
     expect(downloadedFilePath).toBeTruthy();
 });

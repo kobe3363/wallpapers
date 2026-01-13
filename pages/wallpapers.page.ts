@@ -1,5 +1,5 @@
 import { type Page, type Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from '../pages';
 import { type PriceFilter } from '../types/types';
 import path from 'path';
 import crypto from 'crypto';

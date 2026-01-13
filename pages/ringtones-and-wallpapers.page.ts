@@ -1,5 +1,5 @@
 import { type Page, type Locator, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { BasePage } from '../pages';
 import { type Category } from '../types/types';
 
 export class RingtonesAndWallpapersPage extends BasePage {
