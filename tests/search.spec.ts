@@ -2,11 +2,11 @@ import { test, expect } from '../fixtures/test-setup';
 import { RingtonesAndWallpapersPage } from '../pages/ringtones-and-wallpapers.page';
 import { WallpapersPage } from '../pages/wallpapers.page';
 import path from 'path';
+import crypto from 'crypto';
 
 test('test', async ({ basePage, page }) => {
     // searching for wallpapers by keyword.
-    await basePage.goto('/');
-    await page.getByRole('link', { name: 'Browse Now' }).click();
+    await basePage.goto('/ringtones-and-wallpapers');
 
     const navBar = page.getByRole('navigation');
     await navBar.getByRole('button', { name: 'All' }).first().click();
@@ -38,8 +38,9 @@ test('test', async ({ basePage, page }) => {
     await expect(modal).toBeHidden({ timeout: 20000 });
     // We should verify that the wallpaper item was successfully downloaded as a final step.
     const download = await downloadPromise;
-    const fileName = download.suggestedFilename();
-    const filePath = path.join(__dirname, '..', 'downloads', fileName);
-    await download.saveAs(filePath);
+    const originalName = download.suggestedFilename();
+    const ext = path.extname(originalName);
+    const fileName = `${crypto.randomUUID()}${ext}`; 
+    await download.saveAs(path.join('downloads', fileName));
     expect(await download.path()).toBeTruthy();
 });
