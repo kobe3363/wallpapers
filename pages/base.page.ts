@@ -1,29 +1,34 @@
-import { expect, Page } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 export class BasePage {
-    constructor(protected page: Page) { }
+    readonly page: Page;
+    readonly rejectCookiesBtn: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.rejectCookiesBtn = page.getByRole('button', { name: 'Reject Optional Cookies' });
+    }
 
     /**
-     * Navigate to a path. Accepts absolute URLs or relative paths (relative to baseURL in config).
+     * Naviguoja į nurodytą puslapį ir automatiškai sutvarko slapukus.
+     * @param path URL kelias (pagal nutylėjimą '/').
      */
     async goto(path = '/') {
         await this.page.goto(path);
         await this.page.waitForLoadState('domcontentloaded');
-        await this.handleCookies();
+        await this.handleInitialCookies();
     }
 
-    async handleCookies() {
-        const btn = this.page.getByRole('button', { name: 'Reject Optional Cookies' });
-
-        await expect.poll(async () => {
-            if (await btn.isVisible()) {
-                await btn.click();
-            }
-            return await btn.isVisible();
-        }, {
-            message: 'Bandome uždaryti slapukus kol mygtukas dings',
-            timeout: 5000,
-            intervals: [250, 500, 1000]
-        }).toBe(false);
+    private async handleInitialCookies() {
+        try {
+            await this.rejectCookiesBtn.waitFor({ state: 'visible', timeout: 3000 });
+            console.log('Cookie banner detected on load. Closing...');
+            await this.rejectCookiesBtn.click();
+            await this.rejectCookiesBtn.waitFor({ state: 'hidden' , timeout: 2000 });
+        } catch (error) {
+            // Baneris nepasirodė – tai normalu (pvz., fixture jau sutvarkė arba sesija išsaugota).
+            // Tęsiame darbą tyliai.
+            // console.log('Cookie banner did not appear, continuing...');
+        }
     }
 }
