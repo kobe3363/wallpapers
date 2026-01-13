@@ -1,9 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { BasePage } from '../pages/base.page';
+import { RingtonesAndWallpapersPage } from '../pages/ringtones-and-wallpapers.page';
+import { WallpapersPage } from '../pages/wallpapers.page';
 
 test('test', async ({ page }) => {
     // searching for wallpapers by keyword.
-    await page.goto(process.env.BASE_URL as string);
-    await page.getByRole('button', { name: 'Reject Optional Cookies' }).click();
+    const basePage = new BasePage(page);
+    console.log('Testo matomas BASE_URL:', process.env.BASE_URL); // Jei čia undefined -> bėda su dotenv
+    await basePage.goto('/');
+    await basePage.acceptCookies();
+
     await page.getByRole('link', { name: 'Browse Now' }).click();
     await page.getByRole('navigation').getByRole('button', { name: 'All' }).click();
     await page.getByLabel('All').getByText('Wallpapers', { exact: true }).click();
