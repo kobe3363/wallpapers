@@ -1,7 +1,6 @@
 import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from './base.page';
-
-export type Category = 'All' | 'Wallpapers' | 'Ringtones' | 'Notification Sounds' | 'Artists';
+import { type Category } from '../types/types';
 
 export class RingtonesAndWallpapersPage extends BasePage {
     readonly navBar: Locator;

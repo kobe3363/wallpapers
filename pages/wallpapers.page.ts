@@ -1,5 +1,6 @@
 import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from './base.page';
+import { type PriceFilter } from '../types/types';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -9,7 +10,7 @@ export class WallpapersPage extends BasePage {
         super(page);
     }
 
-    async filterByPrice(priceType: 'Free' | 'Premium') {
+    async filterByPrice(priceType: PriceFilter) {
         const priceBtn = this.page.getByRole('button', { name: 'Price' });
         await priceBtn.click();
 
