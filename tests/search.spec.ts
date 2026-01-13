@@ -1,31 +1,45 @@
 import { test, expect } from '../fixtures/test-setup';
 import { RingtonesAndWallpapersPage } from '../pages/ringtones-and-wallpapers.page';
 import { WallpapersPage } from '../pages/wallpapers.page';
+import path from 'path';
 
 test('test', async ({ basePage, page }) => {
     // searching for wallpapers by keyword.
     await basePage.goto('/');
-
     await page.getByRole('link', { name: 'Browse Now' }).click();
-    await page.getByRole('navigation').getByRole('button', { name: 'All' }).click();
-    await page.getByLabel('All').getByText('Wallpapers', { exact: true }).click();
+
+    const navBar = page.getByRole('navigation');
+    await navBar.getByRole('button', { name: 'All' }).first().click();
+    // Jei meniu netyčia užsidarė (dėl animacijų), patikriname ir bandome dar kartą
+    const wallpapersOption = page.getByRole('menuitemradio', { name: 'Wallpapers' });
+    if (!(await wallpapersOption.isVisible())) {
+         await navBar.getByRole('button', { name: 'All' }).first().click();
+    }
+    await wallpapersOption.click();
+    await expect(navBar.getByRole('button', { name: 'Wallpapers' })).toBeVisible();
+
     await page.getByRole('navigation').getByRole('textbox', { name: 'Search ' + process.env.COMPANY_NAME }).click();
     await page.getByRole('navigation').getByRole('textbox', { name: 'Search ' + process.env.COMPANY_NAME }).fill('sunrise');
-    // identifying free vs premium
     await page.getByRole('navigation').getByRole('button', { name: 'Search' }).click();
+    // identifying free vs premium
     await page.getByRole('button', { name: 'Price' }).click();
-    // downloading free wallpaper
-    await page.locator('.Checkbox_input__ZoALC').first().click();
+    await page.locator('div[role="option"]', { hasText: 'Free' }).click();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('option', { name: 'Free' })).toBeHidden();
     await expect(page.getByRole('button', { name: 'Free' })).toBeVisible();
+    // downloading free wallpaper
     await page.getByRole('link', { name: 'sunrise' }).first().click();
     await expect(page.getByRole('button', { name: 'Download' })).toBeVisible();
     await page.getByRole('button', { name: 'Download' }).click();
-    await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
-    await page.getByText('14').click();
-    // We should verify that the wallpaper item was successfully downloaded as a final step.
+
     const downloadPromise = page.waitForEvent('download');
-    await page.goto(process.env.BASE_URL + '/wallpapers/0f377020-bbc0-47fb-ac5a-ade2429217ac');
+    const modal = page.locator('div[role="dialog"]').filter({ hasText: 'Preparing your download' });
+    await expect(modal).toBeVisible();
+    await expect(modal).toBeHidden({ timeout: 20000 });
+    // We should verify that the wallpaper item was successfully downloaded as a final step.
     const download = await downloadPromise;
-    await download.saveAs('downloaded_wallpaper.jpg');
+    const fileName = download.suggestedFilename();
+    const filePath = path.join(__dirname, '..', 'downloads', fileName);
+    await download.saveAs(filePath);
     expect(await download.path()).toBeTruthy();
 });

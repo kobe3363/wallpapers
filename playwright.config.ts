@@ -4,6 +4,17 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+const chromiumArgs = [
+  '--start-maximized',
+  '--disable-features=Translate,TranslateUI',
+  '--disable-translate',
+  '--no-first-run',
+  '--no-default-browser-check',
+  '--disable-popup-blocking',
+  '--disable-extensions',
+  '--hide-crash-restore-bubble'
+];
+
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.ts',
@@ -19,7 +30,7 @@ export default defineConfig({
   workers: process.env.CI ? '50%' : '25%',
   reporter: [
     ['list'],
-    ['html', { open: 'never' }],  ],
+    ['html', { open: 'never' }],],
   use: {
     actionTimeout: 30 * 1000,
     navigationTimeout: 60 * 1000,
@@ -28,6 +39,10 @@ export default defineConfig({
     video: 'on',
     screenshot: 'on',
     headless: !!process.env.CI,
+    viewport: null,
+    launchOptions: {
+      slowMo: 50,
+    },
     extraHTTPHeaders: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       'Accept-Language': 'en-US,en;q=0.9',
@@ -36,7 +51,15 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop-chrome',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        locale: 'en-US',
+        viewport: null,
+        deviceScaleFactor: undefined,
+        launchOptions: {
+          args: chromiumArgs
+        },
+      },
     },
   ],
   outputDir: './test-results',

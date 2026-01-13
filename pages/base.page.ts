@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 export class BasePage {
     constructor(protected page: Page) { }
@@ -8,6 +8,22 @@ export class BasePage {
      */
     async goto(path = '/') {
         await this.page.goto(path);
-        await this.page.waitForLoadState('load');
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.handleCookies();
+    }
+
+    async handleCookies() {
+        const btn = this.page.getByRole('button', { name: 'Reject Optional Cookies' });
+
+        await expect.poll(async () => {
+            if (await btn.isVisible()) {
+                await btn.click();
+            }
+            return await btn.isVisible();
+        }, {
+            message: 'Bandome uždaryti slapukus kol mygtukas dings',
+            timeout: 5000,
+            intervals: [250, 500, 1000]
+        }).toBe(false);
     }
 }
