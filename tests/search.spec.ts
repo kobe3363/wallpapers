@@ -1,14 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { BasePage } from '../pages/base.page';
+import { test, expect } from '../fixtures/test-setup';
 import { RingtonesAndWallpapersPage } from '../pages/ringtones-and-wallpapers.page';
 import { WallpapersPage } from '../pages/wallpapers.page';
 
-test('test', async ({ page }) => {
+test('test', async ({ basePage, page }) => {
     // searching for wallpapers by keyword.
-    const basePage = new BasePage(page);
-    console.log('Testo matomas BASE_URL:', process.env.BASE_URL); // Jei čia undefined -> bėda su dotenv
     await basePage.goto('/');
-    await basePage.acceptCookies();
 
     await page.getByRole('link', { name: 'Browse Now' }).click();
     await page.getByRole('navigation').getByRole('button', { name: 'All' }).click();
@@ -30,4 +26,6 @@ test('test', async ({ page }) => {
     const downloadPromise = page.waitForEvent('download');
     await page.goto(process.env.BASE_URL + '/wallpapers/0f377020-bbc0-47fb-ac5a-ade2429217ac');
     const download = await downloadPromise;
+    await download.saveAs('downloaded_wallpaper.jpg');
+    expect(await download.path()).toBeTruthy();
 });
