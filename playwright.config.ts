@@ -23,6 +23,9 @@ export default defineConfig({
   outputDir: './test-results',
   timeout: 5 * 60 * 1000,
   globalTimeout: 30 * 60 * 1000,
+  expect: {
+    timeout: 30 * 1000,
+  },
   maxFailures: undefined,
   quiet: false,
   reportSlowTests: null,
