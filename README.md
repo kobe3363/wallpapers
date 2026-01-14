@@ -12,9 +12,9 @@ A robust, high-performance automated regression suite designed for a digital con
 
 ### Stability Strategy
 The suite employs advanced techniques to handle aggressive pop-ups, GDPR banners, and third-party scripts without slowing down the tests:
-* **Network-Level Blocking:** Automatically aborts requests to tracking/ad services (Didomi, Htlbid, Pubads) before they reach the browser.
-* **DOM Injection & Cleaning:** A custom fixture injects a background script that proactively removes overlay elements (`#didomi-host`) from the DOM every 50ms.
-* **Zero-Interaction Handling:** Tests do not waste time clicking "Reject Cookies" – the banners are prevented from rendering entirely.
+* **Network-Level Blocking:** Aborts requests matching `**/*didomi*` to reduce CMP/overlay injection. (Extendable if needed.)
+* **DOM Injection & Cleaning:** A global fixture injects an init script that removes known overlay containers (e.g. `#didomi-host`) and unlocks scrolling; it runs on a short interval.
+* **Best-effort banner suppression:** The goal is to avoid manual "Accept" clicks, but new third-party banners may still appear until their selectors/routes are added.
 
 ### Smart flakiness handling
 Specifically tuned for UI animations and overlay interruptions:
@@ -62,7 +62,7 @@ graph LR
  ┃ ┣ 📜 ringtones...page.ts   # Search & category selection logic
  ┃ ┗ 📜 wallpapers.page.ts    # Filtering & download verification logic
  ┣ 📂 tests
- ┃ ┗ 📜 search.spec.ts        # Home assignement
+ ┃ ┗ 📜 search.spec.ts        # Homework assignment example
  ┣ 📜 playwright.browsers.ts  # Isolated browser profiles
  ┣ 📜 playwright.config.ts    # Main configuration file
  ┗ 📜 package.json            # Scripts and dependencies
@@ -95,9 +95,9 @@ graph LR
 The project includes several `npm` scripts for different testing scenarios:
 
 ### Standard Execution
-Run all tests in Headless mode (Default):
+Run all tests:
 ```bash
-npm run test
+npm run test:local
 ```
 
 ### UI Mode (Time Travel Debugging)
@@ -116,7 +116,7 @@ npm run test:firefox
 ```
 
 ### Flakiness prevention
-Runs the tests 10 times in parallel (single worker) to prove stability. Useful for verifying fixes for intermittent failures:
+Repeats each test 10 times with a single worker to validate stability. Useful for verifying fixes for intermittent failures:
 ```bash
 npm test:local:flakiness
 ```
