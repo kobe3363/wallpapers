@@ -1,26 +1,29 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+import { DesktopBrowsers, CIBrowsers } from './playwright.browsers';
 
 dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
 
-const chromiumArgs = [
-  '--start-maximized',
-  '--disable-features=Translate,TranslateUI',
-  '--disable-translate',
-  '--no-first-run',
-  '--no-default-browser-check',
-  '--disable-popup-blocking',
-  '--disable-extensions',
-  '--hide-crash-restore-bubble'
-];
+const COMMON_USE: PlaywrightTestConfig['use'] = {
+  baseURL: process.env.BASE_URL,
+  trace: 'on-first-retry',
+  video: 'retain-on-failure',
+  screenshot: 'only-on-failure',
+  headless: !!process.env.CI,
+  extraHTTPHeaders: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept-Language': 'en-US,en;q=0.9',
+  },
+};
 
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.ts',
+  outputDir: './test-results',
   timeout: 5 * 60 * 1000,
-  globalTimeout: 10 * 60 * 1000,
-  maxFailures: 5,
+  globalTimeout: 30 * 60 * 1000,
+  maxFailures: undefined,
   quiet: false,
   reportSlowTests: null,
   preserveOutput: 'always',
@@ -32,52 +35,9 @@ export default defineConfig({
     ['list'],
     ['html', { open: 'never' }],],
   use: {
+    ...COMMON_USE,
     actionTimeout: 30 * 1000,
     navigationTimeout: 60 * 1000,
-    baseURL: process.env.BASE_URL,
-    trace: 'on',
-    video: 'on',
-    screenshot: 'on',
-    headless: !!process.env.CI,
-    launchOptions: {
-    },
-    extraHTTPHeaders: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept-Language': 'en-US,en;q=0.9',
-    },
   },
-  projects: [
-    {
-      name: 'Chrome',
-      use: {
-        ...devices['Desktop Chrome'],
-        launchOptions: {
-          args: chromiumArgs
-        },
-      },
-    },
-    {
-      name: 'Microsoft Edge',
-      use: {
-        ...devices['Desktop Edge'],
-        channel: 'msedge',
-        launchOptions: {
-          args: chromiumArgs
-        },
-      },
-    },
-    {
-      name: 'Firefox',
-      use: { 
-        ...devices['Desktop Firefox'],
-      },
-    },
-    {
-      name: 'Webkit Safari',
-      use: { 
-        ...devices['Desktop Safari'],
-      },
-    },
-  ],
-  outputDir: './test-results',
+  projects: process.env.CI ? CIBrowsers : DesktopBrowsers,
 });
