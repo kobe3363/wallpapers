@@ -2,7 +2,14 @@
   "name": "wallpapers",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:ci": "CI=true npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "test:local": "npx playwright test",
+    "test:local:flakiness": "npx playwright test --repeat-each 10 --workers=1",
+    "vscode:debug": "npx playwright test --config ./playwright.config.ts --workers=1",
+    "report": "npx playwright show-report"
+  },
   "keywords": [],
   "author": "Konstantin Belena",
   "license": "ISC",
