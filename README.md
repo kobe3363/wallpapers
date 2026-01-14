@@ -10,7 +10,7 @@ A robust, high-performance automated regression suite designed for a digital con
 
 ## Key features
 
-### "Bulletproof" Stability Strategy
+### Stability Strategy
 The suite employs advanced techniques to handle aggressive pop-ups, GDPR banners, and third-party scripts without slowing down the tests:
 * **Network-Level Blocking:** Automatically aborts requests to tracking/ad services (Didomi, Htlbid, Pubads) before they reach the browser.
 * **DOM Injection & Cleaning:** A custom fixture injects a background script that proactively removes overlay elements (`#didomi-host`) from the DOM every 50ms.
@@ -103,7 +103,7 @@ npm run test
 ### UI Mode (Time Travel Debugging)
 Opens Playwright's interactive UI runner:
 ```bash
-npm run test
+npm run test:ui
 ```
 
 ### Browser-Specific Runs
