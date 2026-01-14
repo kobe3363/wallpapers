@@ -3,6 +3,7 @@ import { BasePage } from '../pages';
 import { type PriceFilter } from '../types/types';
 import path from 'path';
 import crypto from 'crypto';
+import fs from 'fs';
 
 export class WallpapersPage extends BasePage {
     
@@ -30,9 +31,9 @@ export class WallpapersPage extends BasePage {
 
         const downloadBtn = this.page.getByRole('button', { name: 'Download' });
         await expect(downloadBtn).toBeVisible();
-        await downloadBtn.click();
 
         const downloadPromise = this.page.waitForEvent('download');
+        await downloadBtn.click();
 
         const modal = this.page.locator('div[role="dialog"]').filter({ hasText: 'Preparing your download' });
         await expect(modal).toBeVisible();
@@ -44,7 +45,13 @@ export class WallpapersPage extends BasePage {
         const sanitizedName = originalName.split('?')[0];
         const ext = path.extname(sanitizedName);
         const fileName = `${crypto.randomUUID()}${ext}`; 
-        const savePath = path.join('downloads', fileName);
+
+        const downloadDir = 'downloads';
+        if (!fs.existsSync(downloadDir)) {
+            fs.mkdirSync(downloadDir, { recursive: true });
+        }
+
+        const savePath = path.join(downloadDir, fileName);
         await download.saveAs(savePath);
 
         return savePath;

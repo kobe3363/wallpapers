@@ -20,20 +20,20 @@ export class RingtonesAndWallpapersPage extends BasePage {
 
     async selectCategory(categoryName: Category) {
         const optionToSelect = this.page.getByRole('menuitemradio', { name: categoryName });
-
+        if (await this.categoryTrigger.textContent() === categoryName) {
+            return;
+        }
         await expect(async () => {
             if (!(await optionToSelect.isVisible())) {
                 await this.categoryTrigger.click({ force: true });
             }
-
-            await expect(optionToSelect).toBeVisible({ timeout: 1000 });
+            await expect(optionToSelect).toBeVisible({ timeout: 2000 });
+            await optionToSelect.click({ force: true });
+            await expect(this.categoryTrigger).toHaveText(categoryName, { timeout: 1000 });
         }).toPass({
-            timeout: 10000,
-            intervals: [500],
+            timeout: 20000,
+            intervals: [1000],
         });
-
-        await optionToSelect.click({ force: true });
-        await expect(this.categoryTrigger).toHaveText(categoryName);
     }
 
     async searchFor(keyword: string) {
