@@ -22,7 +22,7 @@ export class RingtonesAndWallpapersPage extends BasePage {
         await this.categoryTrigger.click();
         const optionToSelect = this.page.getByRole('menuitemradio', { name: categoryName });
         if (!(await optionToSelect.isVisible())) {
-            console.log(`Meniu užsidarė, bandome atidaryti dar kartą, kad paspaustume "${categoryName}"...`);
+            console.log(`Reopening menu in order to click "${categoryName}"...`);
             await this.categoryTrigger.click();
         }
         await optionToSelect.click();
