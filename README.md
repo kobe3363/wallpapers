@@ -105,21 +105,19 @@ graph LR
 
 ## Project Structure
 
-├── fixtures/
-│   └── test-setup.ts       # GLOBAL SETUP: Network blocking, DOM cleaning, Auto-fixtures
-├── pages/
-│   ├── base.page.ts        # Shared logic (Navigation, Load states)
-│   ├── ringtones...page.ts # Search & Category selection logic
-│   └── wallpapers.page.ts  # Filtering & Download verification logic
-├── tests/
-│   └── search.spec.ts      # Main E2E scenarios
-├── playwright.browsers.ts  # Isolated browser profiles (Chrome, Edge, Firefox, Safari)
-├── playwright.config.ts    # Main configuration file
-└── package.json            # Scripts and dependencies
-
-**Example: Headless Firefox Run with Custom Timeout**
-```bash
-./gradlew clean test "-Dselenide.browser=firefox" "-Dselenide.headless=true" "-Dtimeout=15000"
+```text
+📦 wallpaper-automation
+ ┣ 📂 fixtures
+ ┃ ┗ 📜 test-setup.ts         # 🛡️ Global Setup: Network blocking, DOM cleaning, Auto-fixtures
+ ┣ 📂 pages
+ ┃ ┣ 📜 base.page.ts          # 🧩 Shared logic (Navigation, Cookies, Load states)
+ ┃ ┣ 📜 ringtones...page.ts   # 🔍 Search & Category selection logic
+ ┃ ┗ 📜 wallpapers.page.ts    # ⬇️ Filtering & Download verification logic
+ ┣ 📂 tests
+ ┃ ┗ 📜 search.spec.ts        # 🧪 Main E2E scenarios
+ ┣ 📜 playwright.browsers.ts  # 🌐 Isolated browser profiles (Chrome, Firefox, Safari)
+ ┣ 📜 playwright.config.ts    # ⚙️ Main configuration file
+ ┗ 📜 package.json            # 📦 Scripts and dependencies
 ```
 
 ---
