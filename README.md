@@ -1,8 +1,8 @@
 # 🎨 Wallpaper Portal Automation Suite
 
-![Playwright](https://img.shields.io/badge/Playwright-1.40+-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-1.57-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 
 A robust, high-performance automated regression suite designed for a digital content platform (Wallpapers & Ringtones). This framework focuses on critical user flows: **Search, Filtering, and Content Download**, with a strong emphasis on stability and resistance to "flakiness".
 
@@ -78,7 +78,7 @@ graph LR
     style Fail fill:#ffcdd2,stroke:#c62828
     style Pass fill:#e8f5e9,stroke:#2e7d32
     style Verify fill:#e1f5fe,stroke:#0277bd
-
+```
 ---
 
 ## 🚀 Installation & Usage
