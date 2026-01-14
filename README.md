@@ -57,7 +57,7 @@ The project includes several `npm` scripts for different testing scenarios:
 Run all tests in Headless mode (Default):
 ```bash
 npm run test
-
+```
 ---
 
 ## 🧪 Test Workflow
