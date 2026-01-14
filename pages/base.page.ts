@@ -13,8 +13,8 @@ export class BasePage {
 
     async goto(path = '/') {
         await this.page.goto(path);
-        await this.page.waitForLoadState('networkidle');
-        await this.handleInitialCookies();
+        await this.page.waitForLoadState('domcontentloaded');
+        // await this.handleInitialCookies();
     }
 
     private async handleInitialCookies() {
