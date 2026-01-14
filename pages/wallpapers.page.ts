@@ -36,7 +36,7 @@ export class WallpapersPage extends BasePage {
 
         const modal = this.page.locator('div[role="dialog"]').filter({ hasText: 'Preparing your download' });
         await expect(modal).toBeVisible();
-        await expect(modal).toBeHidden({ timeout: 20000 });
+        await expect(modal).toBeHidden({ timeout: 20 * 1000 });
 
         const download = await downloadPromise;
         const originalName = download.suggestedFilename();
