@@ -40,7 +40,9 @@ export class WallpapersPage extends BasePage {
 
         const download = await downloadPromise;
         const originalName = download.suggestedFilename();
-        const ext = path.extname(originalName);
+        // Safari: need to sanitize filename to avoid issues with query params in names
+        const sanitizedName = originalName.split('?')[0];
+        const ext = path.extname(sanitizedName);
         const fileName = `${crypto.randomUUID()}${ext}`; 
         const savePath = path.join('downloads', fileName);
         await download.saveAs(savePath);
