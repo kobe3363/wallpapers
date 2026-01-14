@@ -19,18 +19,19 @@ export class RingtonesAndWallpapersPage extends BasePage {
     }
 
     async selectCategory(categoryName: Category) {
-        await this.categoryTrigger.click();
         const optionToSelect = this.page.getByRole('menuitemradio', { name: categoryName });
-        for (let i = 0; i < 3; i++) {
-            if (await optionToSelect.isVisible()) break;
 
-            console.log(`Bandymas atidaryti meniu (${i + 1}/3)...`);
-            await this.categoryTrigger.click({ force: true });
+        await expect(async () => {
+            if (!(await optionToSelect.isVisible())) {
+                await this.categoryTrigger.click({ force: true });
+            }
 
-            // Firefox kartais lagina piešiant meniu
-            await this.page.waitForTimeout(500);
-        }
-        await optionToSelect.waitFor({ state: 'attached', timeout: 5000 });
+            await expect(optionToSelect).toBeVisible({ timeout: 1000 });
+        }).toPass({
+            timeout: 10000,
+            intervals: [500],
+        });
+
         await optionToSelect.click({ force: true });
         await expect(this.categoryTrigger).toHaveText(categoryName);
     }
