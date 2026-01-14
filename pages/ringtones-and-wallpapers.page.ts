@@ -9,7 +9,7 @@ export class RingtonesAndWallpapersPage extends BasePage {
     readonly searchButton: Locator;
 
     constructor(page: Page) {
-        super(page); 
+        super(page);
 
         this.navBar = page.getByRole('navigation');
         this.categoryTrigger = this.navBar.locator('button[class*="DropdownChip"]');
@@ -21,11 +21,17 @@ export class RingtonesAndWallpapersPage extends BasePage {
     async selectCategory(categoryName: Category) {
         await this.categoryTrigger.click();
         const optionToSelect = this.page.getByRole('menuitemradio', { name: categoryName });
-        if (!(await optionToSelect.isVisible())) {
-            console.log(`Reopening menu in order to click "${categoryName}"...`);
-            await this.categoryTrigger.click();
+        for (let i = 0; i < 3; i++) {
+            if (await optionToSelect.isVisible()) break;
+
+            console.log(`Bandymas atidaryti meniu (${i + 1}/3)...`);
+            await this.categoryTrigger.click({ force: true });
+
+            // Firefox kartais lagina piešiant meniu
+            await this.page.waitForTimeout(500);
         }
-        await optionToSelect.click();
+        await optionToSelect.waitFor({ state: 'attached', timeout: 5000 });
+        await optionToSelect.click({ force: true });
         await expect(this.categoryTrigger).toHaveText(categoryName);
     }
 
