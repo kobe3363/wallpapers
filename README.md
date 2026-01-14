@@ -118,6 +118,6 @@ npm run test:firefox
 ### Flakiness prevention
 Repeats each test 10 times with a single worker to validate stability. Useful for verifying fixes for intermittent failures:
 ```bash
-npm test:local:flakiness
+npm run test:local:flakiness
 ```
 ---

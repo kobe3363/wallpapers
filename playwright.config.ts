@@ -1,4 +1,4 @@
-import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test';
+import { defineConfig, type PlaywrightTestConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 import { DesktopBrowsers, CIBrowsers } from './playwright.browsers';
@@ -29,10 +29,10 @@ export default defineConfig({
   maxFailures: undefined,
   quiet: false,
   reportSlowTests: null,
-  preserveOutput: 'always',
+  preserveOutput: 'failures-only',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 0,
+  retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? '50%' : '25%',
   reporter: [
     ['list'],
