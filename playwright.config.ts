@@ -39,7 +39,6 @@ export default defineConfig({
     video: 'on',
     screenshot: 'on',
     headless: !!process.env.CI,
-    viewport: null,
     launchOptions: {
     },
     extraHTTPHeaders: {
@@ -49,15 +48,34 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'desktop-chrome',
+      name: 'Chrome',
       use: {
         ...devices['Desktop Chrome'],
-        locale: 'en-US',
-        viewport: null,
-        deviceScaleFactor: undefined,
         launchOptions: {
           args: chromiumArgs
         },
+      },
+    },
+    {
+      name: 'Microsoft Edge',
+      use: {
+        ...devices['Desktop Edge'],
+        channel: 'msedge',
+        launchOptions: {
+          args: chromiumArgs
+        },
+      },
+    },
+    {
+      name: 'Firefox',
+      use: { 
+        ...devices['Desktop Firefox'],
+      },
+    },
+    {
+      name: 'Webkit Safari',
+      use: { 
+        ...devices['Desktop Safari'],
       },
     },
   ],
