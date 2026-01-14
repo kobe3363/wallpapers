@@ -17,10 +17,10 @@ The suite employs advanced techniques to handle aggressive pop-ups, GDPR banners
 * **Zero-Interaction Handling:** Tests do not waste time clicking "Reject Cookies" – the banners are prevented from rendering entirely.
 
 ### 🧠 Smart Flakiness Handling
-Specifically tuned for **Firefox** and **WebKit** rendering idiosyncrasies:
-* **Hybrid Locators:** Uses a combination of `getByRole` and `getByText` to handle Accessibility Tree inconsistencies in Headless mode.
-* **State-Aware Interactions:** Logic checks `data-state="closed"` attributes before attempting interactions to avoid "toggle wars".
-* **Auto-Retry Assertions:** Utilizes Playwright's `expect.toPass()` pattern to gracefully handle UI animations and rendering delays.
+Specifically tuned for UI animations and overlay interruptions:
+* **Auto-Retry Assertions:** Wraps interaction steps in Playwright's `expect.toPass()` to automatically retry operations when the UI is unstable (e.g., menu opening delays).
+* **Force Interactions:** Utilizes `{ force: true }` on critical click actions to bypass potential overlay interceptions (like stubborn banners) that might persist despite DOM cleaning.
+* **Visibility Loops:** Explicitly verifies element visibility within the retry loop, ensuring interactions occur only when the UI is fully rendered.
 
 ### 🏗️ Modular Architecture
 * **Page Object Model (POM):** Strict separation of selectors and test logic.
@@ -58,6 +58,27 @@ Run all tests in Headless mode (Default):
 ```bash
 npm run test
 ```
+
+### UI Mode (Time Travel Debugging)
+Opens Playwright's interactive UI runner:
+```bash
+npm run test
+```
+
+### Browser-Specific Runs
+Run tests only on a specific engine:
+```bash
+npm run test:chrome
+```
+```bash
+npm run test:firefox
+```
+
+### Stress Testing (Flakiness Check)
+Runs the tests 10 times in parallel (single worker) to prove stability. Useful for verifying fixes for intermittent failures:
+```bash
+npm test:local:flakiness
+```
 ---
 
 ## 🧪 Test Workflow
@@ -79,78 +100,22 @@ graph LR
     style Pass fill:#e8f5e9,stroke:#2e7d32
     style Verify fill:#e1f5fe,stroke:#0277bd
 ```
----
-
-## 🚀 Installation & Usage
-
-### Prerequisites
-* **Java JDK 17**: Ensure `java -version` returns 17.
-* **Browser**: Chrome, Firefox, or Edge.
-* **Gradle**: Wrapper included (`./gradlew`).
-
-### Execution Commands
-
-**1. Default Run (Headed Chrome)**
-```bash
-./gradlew clean test
-```
-**2. Run Specific Test Groups Execute only tests tagged with specific groups (e.g., "regression" or "smoke"):**
-```bash
-./gradlew clean test -Dgroups=regression
-```
-**3. Sequential Debug Mode Disable parallelism for easier debugging:**
-```bash
-./gradlew clean test -Dserial=true
-```
-**4. View Reporting Generate and serve the interactive Allure report (History, Graphs, Screenshots):**
-```bash
-./gradlew allureServe
-```
-
-### Stability check (Flakiness)
-
-To ensure the test suite is robust and free of flaky failures, verify stability by running the execution multiple times in a loop.
-
-**Mac / Linux (Bash):**
-```bash
-for i in {1..10}; do 
-    echo "=== Cycle $i ==="
-    ./gradlew clean test --warning-mode none
-    if [ $? -ne 0 ]; then echo "Test Failed on Cycle $i"; break; fi
-done
-```
-**Windows (PowerShell):**
-```powershell
-1..10 | ForEach-Object { 
-    Write-Host "=== Cycle $_ ==="
-    .\gradlew clean test --warning-mode none
-    if ($LASTEXITCODE -ne 0) { Write-Error "Test Failed on Cycle $_"; break } 
-}
-```
-
-### Code Quality & Linting
-
-To ensure the code follows **Google Java Style** standards and remains clean, run the static analysis tool before pushing code. This will generate a report in `build/reports/checkstyle/test.html` if issues are found.
-```bash
-./gradlew checkstyleTest
-```
 
 ---
 
-## ⚙️ Configuration
+## Project Structure
 
-This project uses a combination of **System Properties** (for framework control) and the **[Owner API](http://owner.aeonbits.org/)** (for test data constants). Defaults are defined in `src/test/resources/config.properties`. You can override any setting via CLI arguments (`-Dkey=value`).
-
-**Key Configuration Properties:**
-
-| Property Key | Default | Description |
-| :--- | :--- | :--- |
-| `selenide.browser` | `chrome` | Target browser (`chrome`, `firefox`, `edge`) |
-| `selenide.headless`| `false` | Run without UI (Recommended for CI) |
-| `timeout` | `10000` | Global element wait time (ms) |
-| `baseUrl` | `imdb.com` | Application Base URL |
-| `serial` | `false` | If `true`, disables parallel execution |
-| `groups` | *(all)* | Filter tests by group (e.g., `search`, `smoke`) |
+├── fixtures/
+│   └── test-setup.ts       # GLOBAL SETUP: Network blocking, DOM cleaning, Auto-fixtures
+├── pages/
+│   ├── base.page.ts        # Shared logic (Navigation, Load states)
+│   ├── ringtones...page.ts # Search & Category selection logic
+│   └── wallpapers.page.ts  # Filtering & Download verification logic
+├── tests/
+│   └── search.spec.ts      # Main E2E scenarios
+├── playwright.browsers.ts  # Isolated browser profiles (Chrome, Edge, Firefox, Safari)
+├── playwright.config.ts    # Main configuration file
+└── package.json            # Scripts and dependencies
 
 **Example: Headless Firefox Run with Custom Timeout**
 ```bash
