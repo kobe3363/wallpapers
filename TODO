@@ -1,0 +1,11 @@
+Base page fix
+Teardown - delete file
+Download - assert file really downloaded: fs.xxx
+Selectors separated
+E2E philosphy?
+.env params checking
+time caps in .toPass
+redo brute element removal
+addHandler should work once basepage is fixed
+no forceclick
+optional params in widely used methods
